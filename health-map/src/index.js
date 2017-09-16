@@ -5,7 +5,7 @@ import App from './App';
 
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
-ReactDOM.render(<App />, document.getElementById('map'));
+ReactDOM.render(<App />, document.getElementById('map-canvas'));
+ReactDOM.render(<App />, document.getElementById('map-canvas'));
 
 registerServiceWorker();

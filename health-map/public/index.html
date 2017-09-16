@@ -1,56 +1,65 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#000000">
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    <script src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAgb4JRX85kyUkN9PhXc1YAZU2f2iADdsw"></script>
-
-
+    <title>Heatmaps</title>
     <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
+      /* to have the map be displayed as large as possible */
+      html, body, #map-canvas {
+        height: 90%;
+        margin: 20px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgb4JRX85kyUkN9PhXc1YAZU2f2iADdsw&libraries=visualization"></script>
+    <script>
+var map, pointarray, heatmap;
 
-    #map {
-      height: 100%;
-    }
-  </style>
+// a shortened version of the data for Google's taxi example
+var taxiData = [
+  new google.maps.LatLng(37.782551, -122.445368),
+  new google.maps.LatLng(52.782551, -136.445368),
 
-    <title>Health Map</title>
-  </head>
-  <body>
-    <div id="map"></div>
 
-<script>
-  function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-       center: {lat: -34.397, lng: 150.644},
-       scrollwheel: false,
-       zoom: 8
+];
+
+
+function initialize() {
+  // the map's options
+  var mapOptions = {
+    zoom: 4,
+    center: new google.maps.LatLng(37.09024, -95.712891),
+    mapTypeId: google.maps.MapTypeId.MAP
+  };
+
+  // the map and where to place it
+  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+  var pointArray = new google.maps.MVCArray(taxiData);
+
+  // what data for the heatmap and how to display it
+  heatmap = new google.maps.visualization.HeatmapLayer({
+    data: pointArray,
+    radius: 20  //centered tp the USA
   });
+
+  // placing the heatmap on the map
+  heatmap.setMap(map);
 }
-</script>
 
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
+// as soon as the document is ready the map is initialized
+google.maps.event.addDomListener(window, 'load', initialize);
 
+    </script>
+  </head>
 
-    <div id="root"></div>
+  <body>
+    <!-- this is where the map finally is drawn onto -->
+    <div id="map-canvas"></div>
 
-
-
-
-
-
+    <div id="new">
+      <button>
+          Configure
+        </button>
   </body>
 </html>
