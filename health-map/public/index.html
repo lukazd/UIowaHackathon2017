@@ -6,6 +6,8 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <title>Cancer Incidents in The USA</title>
     <script src="node_modules/react/dist/react.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
     <style>
       html, body, #map { height: 95%; margin: 0; padding: 0; overflow: hidden; }
         .nicebox {
@@ -230,6 +232,13 @@
        */
       function loadCensusData(variable) {
         // load the requested variable from the census API (using local copies)
+        var ref = firebase.database().ref("1999/Alabama/FEMALE-ALL RACES-ALL CANCER SITES COMBINED");
+        ref.once("value").then(function(snapshot) {
+          var key = snapshot.key;
+          var value = snapshot.value;
+          Log.debug(key);
+          Log.debug(value);
+        });
         var xhr = new XMLHttpRequest();
         xhr.open('GET', variable + '.json');
         xhr.onload = function() {
