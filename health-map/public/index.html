@@ -111,10 +111,10 @@
       <div>
       <select id="census-variable">
         <option value="https://storage.googleapis.com/mapsdevsite/json/DP02_0066PE">Men & Women</option>
-        <option value="https://storage.googleapis.com/mapsdevsite/json/DP05_0017E">Men</option>
+        <!-- <option value="https://storage.googleapis.com/mapsdevsite/json/DP05_0017E">Men</option>
         <option value="https://storage.googleapis.com/mapsdevsite/json/DP05_0001E">Women</option>
         <option value="https://storage.googleapis.com/mapsdevsite/json/DP02_0016E">Average family size</option>
-        <option value="https://storage.googleapis.com/mapsdevsite/json/DP03_0088E">Per-capita income</option>
+        <option value="https://storage.googleapis.com/mapsdevsite/json/DP03_0088E">Per-capita income</option> -->
       </select>
       </div>
       <div id="legend">
@@ -134,7 +134,7 @@
     <br />
 
     <div id="slidecontainer">
-      <input type="range" min="1999" max="2014" value="2007" class="slider" data-show-value="true" id="myRange">
+      <input type="range" min="1999" max="2014" value="2007" class="slider" data-show-value="true" id="myRange" onChange="loadCensusData();">
 
       <label>Year: <span id="demo"></span></label>
     </div>
@@ -180,7 +180,9 @@
       }];
       var map;
       var censusMin = Number.MAX_VALUE, censusMax = -Number.MAX_VALUE;
-
+      var otherApp = firebase.initializeApp({
+        databaseURL: "https://healthmap-ce9ce.firebaseio.com"
+      });
 
       function initMap() {
         // load the map
@@ -226,18 +228,18 @@
        */
       function loadCensusData(variable) {
         // load the requested variable from the census API (using local copies)
-        var otherApp = firebase.initializeApp({
-          databaseURL: "https://healthmap-ce9ce.firebaseio.com"
-        });
+        clearCensusData();
         var year = "1999"
         var states = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
         for(let s of states){
-          var stringy1 = year + "/" + s + "/" + "MALE AND FEMALE-ALL RACES-ALL CANCER SITES COMBINED"
+          var stringy1 = demo.textContent + "/" + s + "/" + "MALE AND FEMALE-ALL RACES-ALL CANCER SITES COMBINED"
+          console.log(stringy1);
           var ref = firebase.database(otherApp).ref(stringy1);
           ref.once("value").then(function(snapshot) {
             var key = snapshot.child("INCIDENCE").val();
             // var value = snapshot.value.child;
             // console.log(key);
+            console.log(demo.textContent);
             var value = parseFloat(key);
             if (value < censusMin) {
               censusMin = value;
@@ -245,6 +247,13 @@
             if (value > censusMax) {
               censusMax = value;
             }
+
+            document.getElementById('census-min').textContent =
+                  censusMin.toLocaleString();
+              document.getElementById('census-max').textContent =
+                  censusMax.toLocaleString();
+
+
             map.data
               .getFeatureById(s)
               .setProperty('census_variable', value);
