@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <title>Cancer Incidents in The USA</title>
+    <title>Cancer Incidents by year in The USA</title>
     <script src="node_modules/react/dist/react.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
@@ -49,12 +49,12 @@
 
 .slider {
     -webkit-appearance: none;
-    width: 100%;
-    height: 15px;
+    width: 80%;
+    height: 5px;
     border-radius: 50px;
     background: #d3d3d3;
     outline: black;
-    opacity: 0.7;
+    opacity: 0.2;
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
@@ -134,21 +134,24 @@
     <br />
 
     <div id="slidecontainer">
-      <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-      <p>Value: this.value </span></p>
+      <input type="range" min="1999" max="2014" value="2007" class="slider" data-show-value="true" id="myRange">
+
+      <label>Year: <span id="demo"></span></label>
     </div>
 
-  <div class="row">
-  <div class="small-10 medium-11 columns">
-    <div class="range-slider" data-slider data-options="display_selector: #sliderOutput3;">
-      <span class="range-slider-handle" role="slider" tabindex="0"></span>
-      <span class="range-slider-active-segment"></span>
-    </div>
-  </div>
-  <div class="small-2 medium-1 columns">
-    <span id="sliderOutput3"></span>
-  </div>
-</div>
+    <script>
+      var slider = document.getElementById("myRange");
+      var output = document.getElementById("demo");
+      output.innerHTML = slider.value;
+
+      slider.oninput = function() {
+        output.innerHTML = this.value;
+      }
+    </script>
+
+
+
+
 
     <script>
     var slider = document.getElementById("myRange");
