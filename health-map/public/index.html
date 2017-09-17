@@ -177,13 +177,9 @@
       }];
       var map;
       var censusMin = Number.MAX_VALUE, censusMax = -Number.MAX_VALUE;
-      var otherApp = firebase.initializeApp({
-        databaseURL: "https://console.firebase.google.com/project/healthmap-ce9ce/database/data/?pli=1"
-      });
 
 
       function initMap() {
-
         // load the map
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 40, lng: -100},
@@ -191,8 +187,6 @@
           mapTypeId: 'satellite',
           styles: mapStyle
         });
-
-
         // set up the style rules and events for google.maps.Data
         map.data.setStyle(styleFeature);
         map.data.addListener('mouseover', mouseInToRegion);
@@ -207,15 +201,12 @@
 
         // state polygons only need to be loaded once, do them now
         loadMapShapes();
-
-
-
       }
 
       /** Loads the state boundary polygons from a GeoJSON source. */
       function loadMapShapes() {
         // load US state outline polygons from a GeoJson file
-        map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/states.js', { idPropertyName: 'STATE' });
+        map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/states.js', { idPropertyName: 'NAME' });
 
         // wait for the request to complete by listening for the first feature to be
         // added
@@ -232,43 +223,65 @@
        */
       function loadCensusData(variable) {
         // load the requested variable from the census API (using local copies)
-        var ref = firebase.database().ref("1999/Alabama/FEMALE-ALL RACES-ALL CANCER SITES COMBINED");
-        ref.once("value").then(function(snapshot) {
-          var key = snapshot.key;
-          var value = snapshot.value;
-          Log.debug(key);
-          Log.debug(value);
+        var otherApp = firebase.initializeApp({
+          databaseURL: "https://healthmap-ce9ce.firebaseio.com"
         });
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', variable + '.json');
-        xhr.onload = function() {
-          var censusData = JSON.parse(xhr.responseText);
-          censusData.shift(); // the first row contains column names
-          censusData.forEach(function(row) {
-            var censusVariable = parseFloat(row[0]);
-            var stateId = row[1];
-
-            // keep track of min and max values
-            if (censusVariable < censusMin) {
-              censusMin = censusVariable;
+        var year = "1999"
+        var states = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+        for(let s of states){
+          var stringy1 = year + "/" + s + "/" + "MALE AND FEMALE-ALL RACES-ALL CANCER SITES COMBINED"
+          var ref = firebase.database(otherApp).ref(stringy1);
+          ref.once("value").then(function(snapshot) {
+            var key = snapshot.child("INCIDENCE").val();
+            // var value = snapshot.value.child;
+            // console.log(key);
+            var value = parseFloat(key);
+            if (value < censusMin) {
+              censusMin = value;
             }
-            if (censusVariable > censusMax) {
-              censusMax = censusVariable;
+            if (value > censusMax) {
+              censusMax = value;
             }
-
-            // update the existing row with the new data
             map.data
-              .getFeatureById(stateId)
-              .setProperty('census_variable', censusVariable);
+              .getFeatureById(s)
+              .setProperty('census_variable', value);
+            // console.log(value);
           });
+        }
 
-          // update and display the legend
-          document.getElementById('census-min').textContent =
-              censusMin.toLocaleString();
-          document.getElementById('census-max').textContent =
-              censusMax.toLocaleString();
-        };
-        xhr.send();
+
+        // var xhr = new XMLHttpRequest();
+        // xhr.open('GET', variable + '.json');
+        // xhr.onload = function() {
+        //   var censusData = JSON.parse(xhr.responseText);
+        //   console.log(censusData)
+        //   censusData.shift(); // the first row contains column names
+        //   censusData.forEach(function(row) {
+        //     var censusVariable = parseFloat(row[0]);
+        //     var stateId = row[1];
+        //
+        //
+        //     // keep track of min and max values
+        //     if (censusVariable < censusMin) {
+        //       censusMin = censusVariable;
+        //     }
+        //     if (censusVariable > censusMax) {
+        //       censusMax = censusVariable;
+        //     }
+        //
+        //     // update the existing row with the new data
+        //     map.data
+        //       .getFeatureById(stateId)
+        //       .setProperty('census_variable', censusVariable);
+        //   });
+        //
+        //   // update and display the legend
+        // //   document.getElementById('census-min').textContent =
+        // //       censusMin.toLocaleString();
+        // //   document.getElementById('census-max').textContent =
+        // //       censusMax.toLocaleString();
+        // };
+        // xhr.send();
       }
 
       /** Removes census data from each shape on the map and resets the UI. */
