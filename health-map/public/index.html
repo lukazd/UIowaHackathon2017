@@ -133,7 +133,7 @@
 
     <div id="slidecontainer">
       <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-      <p>Value: {this.value}</span></p>
+      <p>Value: this.value </span></p>
     </div>
 
   <div class="row">
@@ -175,7 +175,9 @@
       }];
       var map;
       var censusMin = Number.MAX_VALUE, censusMax = -Number.MAX_VALUE;
-      var otherApp = firebase.app("healthmap-ce9ce");
+      var otherApp = firebase.initializeApp({
+        databaseURL: "https://console.firebase.google.com/project/healthmap-ce9ce/database/data/?pli=1"
+      });
 
 
       function initMap() {
