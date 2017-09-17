@@ -17,8 +17,8 @@ export default class App extends Component {
   render() {
 
     return (
-        <div style = {{height: '100%' }}  >
-      
+        <div style = {{height: '10%' }}  >
+
         </div>
 
       );
