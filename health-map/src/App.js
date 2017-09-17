@@ -1,9 +1,9 @@
-/*global google*/
+
 
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
 import './App.css';
-import InputSlider from 'react-input-slider';
+
 
 
 export default class App extends Component {
@@ -17,7 +17,7 @@ export default class App extends Component {
   render() {
 
     return (
-        <div style = {{height: '100%' }}  >
+        <div style = {{height: '8%' }}  >
         </div>
 
       );
