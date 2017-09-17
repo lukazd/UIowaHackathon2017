@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "google-maps-react": "^1.1.0",
+    "nw-react-slider": "^2.0.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-input-slider": "^3.0.0",
+    "react-rangeslider": "^2.1.0",
     "react-scripts": "1.0.13"
   },
   "scripts": {

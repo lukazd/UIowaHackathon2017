@@ -1,9 +1,9 @@
 
 
 import React, { Component } from 'react';
-
+import VolumeSlider from './rangeslider.js';
 import './App.css';
-
+import Slider from 'react-rangeslider';
 
 
 export default class App extends Component {
@@ -17,7 +17,8 @@ export default class App extends Component {
   render() {
 
     return (
-        <div style = {{height: '8%' }}  >
+        <div style = {{height: '100%' }}  >
+      
         </div>
 
       );
